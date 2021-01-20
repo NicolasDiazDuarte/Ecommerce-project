@@ -2,6 +2,8 @@ import React,{useState,useEffect} from 'react'
 import Axios from "axios"
 import { Card, Col, Icon, Row } from 'antd'
 import ImageSlider from '../../utils/ImageSlider'
+import RadioBox from './Sections/RadioBox'
+import {price} from './Sections/Datas'
 
 const {Meta} = Card
 
@@ -12,6 +14,11 @@ function LandingPage() {
     const [limit, setLimit] = useState(8)
     const [postSize, setPostSize] = useState(0)
 
+    const [Filters, setFilters] = useState({
+        continents: [],
+        price: []
+    })
+
     
     useEffect(() => {
 
@@ -21,6 +28,51 @@ function LandingPage() {
         }
         getProducts(variables)
     }, [])
+
+    const showFilteredResults = (filters) => {
+
+        const variables = {
+            skip: 0,
+            limit: limit,
+            filters: filters
+
+        }
+        getProducts(variables)
+        setSkip(0)
+
+    }
+
+    const handlePrice = (value) => {
+        const data = price;
+        let array = [];
+
+        for (let key in data) {
+
+            if (data[key]._id === parseInt(value, 10)) {
+                array = data[key].array;
+            }
+        }
+        console.log('array', array)
+        return array
+    }
+
+    const handleFilters = (filters, category) => {
+
+        const newFilters = { ...Filters }
+
+        newFilters[category] = filters
+
+        if (category === "price") {
+            let priceValues = handlePrice(filters)
+            newFilters[category] = priceValues
+
+        }
+
+        console.log(newFilters)
+
+        showFilteredResults(newFilters)
+        setFilters(newFilters)
+    }
 
     const getProducts = (variables)=> {
         Axios.post('/api/product/getProducts',variables)
@@ -63,6 +115,8 @@ function LandingPage() {
             <div style={{textAlign:'center'}}>
                 <h2>Venta de Productos  <Icon type="rocket"/> </h2>
             </div>
+
+            <RadioBox handleFilters={filters=> handleFilters(filters,"price")} />
 
             {products.length===0 ? 
                 <div style={{display:'flex',height:'300px',justifyContent:'center',alignItems:'center'}}> 
