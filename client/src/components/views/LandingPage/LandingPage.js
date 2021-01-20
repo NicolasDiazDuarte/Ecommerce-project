@@ -29,6 +29,22 @@ function LandingPage() {
         getProducts(variables)
     }, [])
 
+    const getProducts = (variables) => {
+        Axios.post('/api/product/getProducts', variables)
+            .then(response => {
+                if (response.data.success) {
+                    if (variables.loadMore) {
+                        setProducts([...products, ...response.data.products])
+                    } else {
+                        setProducts(response.data.products)
+                    }
+                    setPostSize(response.data.postSize)
+                } else {
+                    alert('Failed to fetch product datas')
+                }
+            })
+    }
+
     const showFilteredResults = (filters) => {
 
         const variables = {
@@ -74,25 +90,9 @@ function LandingPage() {
         setFilters(newFilters)
     }
 
-    const getProducts = (variables)=> {
-        Axios.post('/api/product/getProducts',variables)
-        .then(response =>{
-            if (response.data.success){
-                
-                setProducts([...products,...response.data.products])
-                
-                setPostSize(response.data.postSize)
-                
-                console.log(response.data.products)
-            } else{
-                alert('Failed to fetch products ')
-            
-            }
-        })
-        
-    }
+    
 
-    const renderCards =products.map((product,index)=>{
+    const renderCards = products.map((product,index)=>{
         return <Col lg={6} md={8} xs={24}>
             <Card hoverable={true} cover={<ImageSlider images={product.images} />}>
                 <Meta title={product.title} description={`$${product.price}`} />
@@ -116,7 +116,7 @@ function LandingPage() {
                 <h2>Venta de Productos  <Icon type="rocket"/> </h2>
             </div>
 
-            <RadioBox handleFilters={filters=> handleFilters(filters,"price")} />
+            <RadioBox list={price} handleFilters={filters=> handleFilters(filters,"price")} />
 
             {products.length===0 ? 
                 <div style={{display:'flex',height:'300px',justifyContent:'center',alignItems:'center'}}> 
