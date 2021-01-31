@@ -4,6 +4,7 @@ import { Card, Col, Icon, Row } from 'antd'
 import ImageSlider from '../../utils/ImageSlider'
 import RadioBox from './Sections/RadioBox'
 import {price} from './Sections/Datas'
+import SearchFeature from './Sections/SearchFeature'
 
 const {Meta} = Card
 
@@ -13,6 +14,7 @@ function LandingPage() {
     const [skip, setSkip] = useState(0)
     const [limit, setLimit] = useState(8)
     const [postSize, setPostSize] = useState(0)
+    const [searchTerms, setSearchTerms] = useState("")
 
     const [Filters, setFilters] = useState({
         continents: [],
@@ -90,6 +92,10 @@ function LandingPage() {
         setFilters(newFilters)
     }
 
+    const updateSearchTerms = (newSearchTerm) => {
+        setSearchTerms(newSearchTerm)
+    }
+
     
 
     const renderCards = products.map((product,index)=>{
@@ -110,6 +116,8 @@ function LandingPage() {
         setSkip(skips)
 
     }
+
+
     return (
         <div style={{width:'75%', margin:'3rem auto'}}>
             <div style={{textAlign:'center'}}>
@@ -117,7 +125,14 @@ function LandingPage() {
             </div>
 
             <RadioBox list={price} handleFilters={filters=> handleFilters(filters,"price")} />
-
+            
+            {/* Seccion de Busqueda*/}
+            <div style={{display:'flex', justifyContent:'flex-end',margin:'1rem auto'}}>
+                <SearchFeature 
+                    refreshFunction={updateSearchTerms}
+                />
+            </div>
+            
             {products.length===0 ? 
                 <div style={{display:'flex',height:'300px',justifyContent:'center',alignItems:'center'}}> 
                     <h2>No post yet...</h2>
