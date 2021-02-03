@@ -70,7 +70,7 @@ function LandingPage() {
                 array = data[key].array;
             }
         }
-        console.log('array', array)
+        
         return array
     }
 
@@ -86,14 +86,26 @@ function LandingPage() {
 
         }
 
-        console.log(newFilters)
+        
 
         showFilteredResults(newFilters)
         setFilters(newFilters)
     }
 
     const updateSearchTerms = (newSearchTerm) => {
+        const variables = {
+            skip: 0,
+            limit: limit,
+            filters: Filters,
+            searchTerm: newSearchTerm
+
+        }
+
+        setSkip(0)
+        
         setSearchTerms(newSearchTerm)
+        
+        getProducts(variables)
     }
 
     
@@ -123,7 +135,8 @@ function LandingPage() {
             <div style={{textAlign:'center'}}>
                 <h2>Venta de Productos  <Icon type="rocket"/> </h2>
             </div>
-
+            
+            {/* Seccion de Filtro por precio*/}
             <RadioBox list={price} handleFilters={filters=> handleFilters(filters,"price")} />
             
             {/* Seccion de Busqueda*/}
@@ -135,7 +148,7 @@ function LandingPage() {
             
             {products.length===0 ? 
                 <div style={{display:'flex',height:'300px',justifyContent:'center',alignItems:'center'}}> 
-                    <h2>No post yet...</h2>
+                    <h2>No se encontraron productos...</h2>
                 </div> :
                 <div> 
                     <Row gutter={[16,16]}>
